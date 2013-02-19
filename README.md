@@ -1,4 +1,4 @@
 ipf
 ===
 
-ipfilter firewall
+Configures ipfilter on SmartOS.
