@@ -1,0 +1,31 @@
+## This file is written by Chef.  Do not edit by hand.
+
+# web server accepting only Cloudflare-originated traffic
+# block and log everything by default; then allow specific http(s) upstreams
+# block short packets which are packets fragmented too short to be real.
+#block in log quick all with short
+
+# pass inbound dns traffic
+#pass out quick proto tcp from any to any port=53 keep state
+#pass out quick proto udp from any to any port=53 keep state
+
+# pass inbound Cloudflare http(s) traffic
+<% @cloudflare_ipv4_ips.each do |ip| -%>
+  pass in quick from <%= ip %> to any port=80 keep state
+  pass in quick from <%= ip %> to any port=443 keep state
+<% end =%>
+
+# pass inbound http(s) traffic from private IP ranges
+<% @private_ip_ranges.each do |ip| -%>
+  pass in quick from <%= ip %> to any
+  pass out quick from any to <%= ip %>
+<% end =%>
+
+# inbound traffic - ssh
+pass in quick from any to any port=22
+
+# pass outgoing traffic
+pass out quick from any to any keep state
+
+# block and log inbound by default, group by destination
+block in log from any to any
