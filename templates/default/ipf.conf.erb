@@ -1,60 +1,58 @@
-## This file is written by Chef in #{__FILE__}, line #{__LINE__}. Do not edit by hand.
-## These should be pretty sane defaults for public cloud
-## hosts.
+## This file is written by Chef.  Do not edit by hand.
 
+<% unless @block_in.nil? %>
 # block traffic in from specified ips/ranges
-<% unless @blocked_in.blank? %>
-  <% @blocked_in.each do |ip| -%>
-    block in quick log from <%= ip %> to any
+  <% @block_in.split.each do |ip| -%>
+block in quick log from <%= ip %> to any
   <% end =%>
 <% end %>
 
+<% unless @block_in.nil? %>
 # block traffic out to specified ips/ranges
-<% unless @blocked_in.blank? %>
-  <% @blocked_in.each do |ip| -%>
-    block out quick log from any to <%= ip %>
+  <% @block_in.split.each do |ip| -%>
+block out quick log from any to <%= ip %>
   <% end =%>
 <% end %>
 
+<% unless @ports_block_in.nil? %>
 # block traffic in on specified ports
-<% unless @ports_in.blank? %>
-  <% @ports_in.each do |port| -%>
-    block in quick log from any to any port=<%= port %>
+  <% @ports_block_in.split.each do |port| -%>
+block in quick log from any to any port=<%= port %>
   <% end =%>
 <% end %>
 
+<% unless @ports_block_out.nil? %>
 # block traffic out on specified ports
-<% unless @ports_out.blank? %>
-  <% @ports_out.each do |port| -%>
-    block out quick log from any to any port=<%= port %>
+  <% @ports_block_out.split.each do |port| -%>
+block out quick log from any to any port=<%= port %>
   <% end =%>
 <% end %>
 
+<% unless @pass_in.nil? %>
 # pass traffic in from specified ips/ranges
-<% unless @pass_in.blank? %>
-  <% @pass_in.each do |ip| -%>
-    pass in quick from <%= ip %> to any keep state
+  <% @pass_in.split.each do |ip| -%>
+pass in quick from <%= ip %> to any keep state
   <% end =%>
 <% end %>
 
+<% unless @pass_out.nil? %>
 # pass traffic out to specified ips/ranges
-<% unless @pass_out.blank? %>
-  <% @pass_out.each do |ip| -%>
-    pass out quick from any to <%= ip %> keep state
+  <% @pass_out.split.each do |ip| -%>
+pass out quick from any to <%= ip %> keep state
   <% end =%>
 <% end %>
 
+<% unless @ports_pass_in.nil? %>
 # pass traffic in on specified ports
-<% unless @ports_in.blank? %>
-  <% @ports_in.each do |port| -%>
-    pass in quick from any to any port=<%= port %> keep state
+  <% @ports_pass_in.split.each do |port| -%>
+pass in quick from any to any port=<%= port %> keep state
   <% end =%>
 <% end %>
 
+<% unless @ports_pass_out.nil? %>
 # pass traffic out on specified ports
-<% unless @ports_out.blank? %>
-  <% @ports_out.each do |port| -%>
-    pass out quick from any to any port=<%= port %> keep state
+  <% @ports_pass_out.split.each do |port| -%>
+pass out quick from any to any port=<%= port %> keep state
   <% end =%>
 <% end %>
 
