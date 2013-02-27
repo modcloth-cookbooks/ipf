@@ -1,2 +1,11 @@
-default['ipf']['ip_ranges']=`curl -s https://www.cloudflare.com/ips-v4`
-default['ipf']['private_ranges']=["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
+# Ranges:
+# populate the inbound_public_ranges attribute with a 
+# newline-delimited array of ips
+default['ipf']['pass_in']=""
+default['ipf']['pass_out']=""
+default['ipf']['block_in']=""
+default['ipf']['block_out']=""
+default['ipf']['ports_block_in']=""
+default['ipf']['ports_pass_in']="22"
+default['ipf']['ports_block_out']=""
+default['ipf']['ports_pass_out']=""

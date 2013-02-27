@@ -1,14 +1,62 @@
 ## This file is written by Chef.  Do not edit by hand.
-## These should be pretty sane defaults for public cloud
-## hosts.
 
-# inbound traffic - ssh
-pass in quick from any to any port=22
+<% unless @block_in.nil? %>
+# block traffic in from specified ips/ranges
+  <% @block_in.split.each do |ip| -%>
+block in quick log from <%= ip %> to any
+  <% end =%>
+<% end %>
 
-# inbound traffic - http(s)
-pass in quick from any to any port=80
-pass in quick from any to any port=443
+<% unless @block_in.nil? %>
+# block traffic out to specified ips/ranges
+  <% @block_in.split.each do |ip| -%>
+block out quick log from any to <%= ip %>
+  <% end =%>
+<% end %>
 
+<% unless @ports_block_in.nil? %>
+# block traffic in on specified ports
+  <% @ports_block_in.split.each do |port| -%>
+block in quick log from any to any port=<%= port %>
+  <% end =%>
+<% end %>
+
+<% unless @ports_block_out.nil? %>
+# block traffic out on specified ports
+  <% @ports_block_out.split.each do |port| -%>
+block out quick log from any to any port=<%= port %>
+  <% end =%>
+<% end %>
+
+<% unless @pass_in.nil? %>
+# pass traffic in from specified ips/ranges
+  <% @pass_in.split.each do |ip| -%>
+pass in quick from <%= ip %> to any keep state
+  <% end =%>
+<% end %>
+
+<% unless @pass_out.nil? %>
+# pass traffic out to specified ips/ranges
+  <% @pass_out.split.each do |ip| -%>
+pass out quick from any to <%= ip %> keep state
+  <% end =%>
+<% end %>
+
+<% unless @ports_pass_in.nil? %>
+# pass traffic in on specified ports
+  <% @ports_pass_in.split.each do |port| -%>
+pass in quick from any to any port=<%= port %> keep state
+  <% end =%>
+<% end %>
+
+<% unless @ports_pass_out.nil? %>
+# pass traffic out on specified ports
+  <% @ports_pass_out.split.each do |port| -%>
+pass out quick from any to any port=<%= port %> keep state
+  <% end =%>
+<% end %>
+
+# the default mode is turtle
 # pass outgoing traffic
 pass out quick from any to any keep state
 
