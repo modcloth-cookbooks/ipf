@@ -26,15 +26,6 @@ script "point ipfilter service at our .conf file" do
   EOH
 end
 
-pass_in = node[:ipf][:pass_in]
-pass_out = node[:ipf][:pass_out]
-block_in = node[:ipf][:block_in]
-block_out = node[:ipf][:block_out]
-ports_pass_in = node[:ipf][:ports_pass_in]
-ports_pass_out = node[:ipf][:ports_pass_out]
-ports_block_in = node[:ipf][:ports_block_in]
-ports_block_out = node[:ipf][:port_block_out]
-
 service "ipfilter" do
   supports :enable => true, :disable => true, :restart => true, :reload => true
   action :enable
@@ -44,6 +35,6 @@ template "/etc/ipf/ipf.conf" do
   source "ipf.conf.erb"
   owner "root"
   mode "0644"
-  variables(:pass_in => pass_in, :pass_out => pass_out, :block_in => block_in, :block_out => block_out, :ports_pass_in => ports_pass_in, :ports_pass_out => ports_pass_out, :ports_block_in => ports_block_in, :ports_block_out => ports_block_out)
+  variables node[:ipf]
   notifies :reload, "service[ipfilter]"
 end
