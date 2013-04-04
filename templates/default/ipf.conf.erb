@@ -49,6 +49,13 @@ pass in quick from any to any port=<%= port %> keep state
   <% end =%>
 <% end %>
 
+<% unless @ports_pass_in_by_ip.nil? %>
+# pass traffic in on specified ports
+  <% @ports_pass_in_by_ip.split.each do |ip_port| -%>
+pass in quick from <%= ip_port.split(",")[1] %> to any port=<%= ip_port.split(",")[0] %> keep state
+  <% end =%>
+<% end %>
+
 <% unless @ports_pass_out.nil? %>
 # pass traffic out on specified ports
   <% @ports_pass_out.split.each do |port| -%>
