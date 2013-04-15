@@ -3,6 +3,8 @@
 # Recipe:: default
 #
 # Copyright 2013, ModCloth, Inc.
+# Author: ModCloth, Inc.
+# Author: sawanoboriyu@higanworks.com
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,10 +33,31 @@ service "ipfilter" do
   action :enable
 end
 
-template "/etc/ipf/ipf.conf" do
-  source "ipf.conf.erb"
-  owner "root"
-  mode "0644"
-  variables node[:ipf]
-  notifies :reload, "service[ipfilter]"
+if node['ipf']['use_metadata']
+  add_pass_in = SmartMachine::Meatadata.from_metadata(node['ipf']['key_metadata'])
+  if add_pass_in
+    new_pass_in = node['ipf']['pass_in'] + add_pass_in.chomp.split(",")
+    new_pass_in.uniq!
+    node.set['ipf']['pass_in'] = new_pass_in
+  end
+end
+
+
+case node['ipf']['rule_type']
+when "string"
+  template "/etc/ipf/ipf.conf" do
+    source "ipf.conf.erb"
+    owner "root"
+    mode "0644"
+    variables node[:ipf]
+    notifies :reload, "service[ipfilter]"
+  end
+when "array"
+  template "/etc/ipf/ipf.conf" do
+    source "ipf_array.conf.erb"
+    owner "root"
+    mode "0644"
+    variables node[:ipf]
+    notifies :reload, "service[ipfilter]"
+  end
 end
