@@ -34,7 +34,7 @@ service "ipfilter" do
 end
 
 if node['ipf']['use_metadata']
-  add_pass_in = SmartMachine::Meatadata.from_metadata(node['ipf']['key_metadata'])
+  add_pass_in = SmartMachine::Metadata.from_metadata(node['ipf']['key_metadata'])
   if add_pass_in
     new_pass_in = node['ipf']['pass_in'] + add_pass_in.chomp.split(",")
     new_pass_in.uniq!
