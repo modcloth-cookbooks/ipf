@@ -9,23 +9,23 @@ As an example, here's how you can allow traffic from any RFC 1918 address, as we
 
     override_attributes(
       "ipf" => {
-        "pass_in" => `curl -s https://www.cloudflare.com/ips-v4`.gsub(/\n/," ").split + ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
+        "pass_in" => `curl -s https://www.cloudflare.com/ips-v4`.gsub(/\n/,' ').split + ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
       }
     )
 
 By default, the ipf cookbook allows only incoming traffic on port 22 (ssh) and allows all outgoing traffic.
 
-(optional)Array mode
+rules
 ----
 
-You can choose a rule format from string and array.
+You can use a rule format by string or array.
 
-If you want to format as array, set`['ipf']['rule_type']="array"`
+set rules as array to an attribute following...
 
-And set rules as array to an attribute following...
+    ['ipf']['pass_icmp']=['any']
+    ['ipf']['pass_in']=['10.0.0.0/8','192.168.0.0/24']
 
-    ['ipf']['pass_icmp']=["any"]
-    ['ipf']['pass_in']=["10.0.0.0/8","192.168.0.0/24"]
+when using array, rules could be inharit. `from default => environment default => role default`
  
 ### addition pass_in rule from metadata
 
