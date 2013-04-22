@@ -19,16 +19,15 @@
 # limitations under the License.
 #
 
-script "point ipfilter service at our .conf file" do
-  interpreter "bash"
-  user "root"
+bash 'point ipfilter service at our .conf file' do
+  user 'root'
   code <<-EOH
-  svccfg -s network/ipfilter:default setprop firewall_config_default/policy = astring: custom
-  svccfg -s network/ipfilter:default setprop firewall_config_default/custom_policy_file = astring: "/etc/ipf/ipf.conf"
+    svccfg -s network/ipfilter:default setprop firewall_config_default/policy = astring: custom
+    svccfg -s network/ipfilter:default setprop firewall_config_default/custom_policy_file = astring: "/etc/ipf/ipf.conf"
   EOH
 end
 
-service "ipfilter" do
+service 'ipfilter' do
   supports :enable => true, :disable => true, :restart => true, :reload => true
   action :enable
 end
@@ -36,23 +35,23 @@ end
 if node['ipf']['use_metadata']
   add_pass_in = SmartMachine::Metadata.from_metadata(node['ipf']['key_metadata'])
   if add_pass_in
-    new_pass_in = node['ipf']['rules']['pass_in'] + add_pass_in.chomp.split(",")
+    new_pass_in = node['ipf']['rules']['pass_in'] + add_pass_in.chomp.split(',')
     new_pass_in.uniq!
     node.set['ipf']['rules']['pass_in'] = new_pass_in
   end
 end
 
 ## convert string to array.
-arrayed_vers = {}
+normalized_vars = {}
 node['ipf']['rules'].each do |k,v|
-  arrayed_vers[k] = [*v] if v.is_a?(Array)
-  arrayed_vers[k] = v.split if v.is_a?(String)
+  normalized_vars[k] = [*v] if v.is_a?(Array)
+  normalized_vars[k] = v.split if v.is_a?(String)
 end
 
-template "/etc/ipf/ipf.conf" do
-  source "ipf_array.conf.erb"
-  owner "root"
-  mode "0644"
-  variables arrayed_vers
-  notifies :reload, "service[ipfilter]"
+template '/etc/ipf/ipf.conf' do
+  source 'ipf.conf.erb'
+  owner 'root'
+  mode 0644
+  variables normalized_vars
+  notifies :reload, 'service[ipfilter]'
 end

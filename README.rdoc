@@ -1,9 +1,0 @@
-= DESCRIPTION:
-Configures the ipf firewall.
-
-= REQUIREMENTS:
-
-= ATTRIBUTES:
-
-= USAGE:
-
