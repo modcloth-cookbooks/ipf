@@ -12,9 +12,10 @@ address, as well as traffic from the newline-delimited list of IP ranges
 used by Cloudflare when accessing your endpoint.
 
 ``` ruby
+cloudflare_ips = `curl -s https://www.cloudflare.com/ips-v4`.split(/[\n\s]/)
 override_attributes(
-  "ipf" => {
-    "pass_in" => `curl -s https://www.cloudflare.com/ips-v4`.gsub(/\n/,' ').split + ["10.0.0.0/8", "192.168.0.0/16", "172.16.0.0/12"]
+  'ipf' => {
+    'pass_in' => cloudflare_ips + ['10.0.0.0/8', '192.168.0.0/16', '172.16.0.0/12']
   }
 )
 ```
@@ -29,8 +30,12 @@ You can specify rules as either strings or arrays.  Setting node
 attributes as arrays looks like this:
 
 ``` ruby
-node['ipf']['pass_icmp'] = ['any']
-node['ipf']['pass_in'] = ['10.0.0.0/8', '192.168.0.0/24']
+override_attributes(
+  'ipf' => {
+    'pass_icmp' => ['any'],
+    'pass_in' => ['10.0.0.0/8', '192.168.0.0/24']
+  }
+)
 ```
 
 The benefit of using arrays is that Chef attribute inheritance works as
@@ -38,15 +43,19 @@ expected.
  
 ### Additional `pass_in` attributes
 
-**NOTE**: This feature depends on `cookbook[smartmachine_functions]` `~>0.5.0`.
+**NOTE**: This feature depends on `cookbook[smartmachine_functions]` `~> 0.5.0`.
 
 If you set `['ipf']['use_metadata'] = true`, the Chef context will get
-additional rules from the Joyent metadata API.  These rules will then be
-merged into the `pass_in` rule attribute.
+additional rules from the Joyent metadata API via the attribute
+specified in `node['ipf']['key_metadata']`.  These rules will be merged
+into the `pass_in` rule attribute.
 
 The default key used is `ipfilter_pass_in`, which can overridden at
-`['ipf']['key_metadata']`, e.g.:
+`['ipf']['key_metadata']`.  The key is fetch from the JSON output of a
+call to `SmartMachine::Metadata.from_metadata` such as:
 
 ``` javascript
-"ipfilter_pass_in" : "192.168.1.0/24,192.168.1.0/24"
+// ...
+  "ipfilter_pass_in": "192.168.1.0/24,192.168.1.0/24"
+// ...
 ```
