@@ -53,6 +53,6 @@ template '/etc/ipf/ipf.conf' do
   source 'ipf.conf.erb'
   owner 'root'
   mode 0644
-  variables arrayed_rules
+  variables arrayed_rules.merge('__file' => __FILE__, '__line' => __LINE__)
   notifies :reload, 'service[ipfilter]'
 end
