@@ -25,14 +25,14 @@ set rules as array to an attribute following...
     ['ipf']['pass_icmp']=['any']
     ['ipf']['pass_in']=['10.0.0.0/8','192.168.0.0/24']
 
-when using array, rules could be inharit. `from default => environment default => role default`
+when using an array, rules could be inherited. `from default => environment default => role default`
  
 ### addition pass_in rule from metadata
 
 Notice: This feature depends on `cookbook[smartmachine_functions]` `~>0.5.0`.
 
-If you set `['ipf']['use_metadata'] = ture`. The chef will get additional rules from the joyent metadataAPI.  
-This rules will merge to pass_in rule.
+If you set `['ipf']['use_metadata'] = true` Chef will get additional rules from the Joyent metadataAPI.  
+These rules will be merged into the pass_in rule.
 
 A default key is `ipfilter_pass_in`. It can overriden at  `['ipf']['key_metadata']`.
 
