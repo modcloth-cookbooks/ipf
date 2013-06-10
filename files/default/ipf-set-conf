@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+svccfg -s network/ipfilter:default setprop \
+  firewall_config_default/policy = astring: custom
+svccfg -s network/ipfilter:default setprop \
+  firewall_config_default/custom_policy_file = astring: "${1:-"/etc/ipf/ipf.conf"}"

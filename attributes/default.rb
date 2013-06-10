@@ -1,10 +1,9 @@
 # Ranges:
-# populate the inbound_public_ranges attribute with a
-# newline-delimited array of ips
+# populate the inbound_public_ranges attribute with a newline-delimited
+# array of ips.
 
-default['ipf']['use_metadata'] = false # add pass_in rule from joyent matadataAPI.
-default['ipf']['key_metadata'] = 'ipfilter_pass_in' # only works in array mode.
-## example of matadata,conma separated strings ) '192.168.1.0/24,192.168.1.0/24'
+default['ipf']['use_metadata'] = false
+default['ipf']['key_metadata'] = 'ipfilter_pass_in'
 
 ## use space separated string, or use array if you want to merge rules by role, environments.
 default['ipf']['rules']['pass_icmp'] = 'any'
