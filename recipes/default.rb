@@ -19,12 +19,13 @@
 # limitations under the License.
 #
 
+cookbook_file "#{Chef::Config[:file_cache_path]}/ipf-set-conf" do
+  source 'ipf-set-conf'
+  mode 0755
+end
+
 bash 'point ipfilter service at our .conf file' do
-  user 'root'
-  code <<-EOH
-    svccfg -s network/ipfilter:default setprop firewall_config_default/policy = astring: custom
-    svccfg -s network/ipfilter:default setprop firewall_config_default/custom_policy_file = astring: "/etc/ipf/ipf.conf"
-  EOH
+  code "#{Chef::Config[:file_cache_path]}/ipf-set-conf '/etc/ipf/ipf.conf'"
 end
 
 service 'ipfilter' do
@@ -41,17 +42,17 @@ if node['ipf']['use_metadata']
   end
 end
 
-## convert string to array.
-normalized_vars = {}
+# Normalize all node['ipf']['rules'] vars to be Arrays
+arrayed_rules = {}
 node['ipf']['rules'].each do |k,v|
-  normalized_vars[k] = [*v] if v.is_a?(Array)
-  normalized_vars[k] = v.split if v.is_a?(String)
+  arrayed_rules[k] = [*v] if v.is_a?(Array)
+  arrayed_rules[k] = v.split if v.is_a?(String)
 end
 
 template '/etc/ipf/ipf.conf' do
   source 'ipf.conf.erb'
   owner 'root'
   mode 0644
-  variables normalized_vars
+  variables arrayed_rules.merge('__file' => __FILE__, '__line' => __LINE__)
   notifies :reload, 'service[ipfilter]'
 end
